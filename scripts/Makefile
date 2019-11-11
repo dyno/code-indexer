@@ -21,8 +21,9 @@ start-services: bootstrap opengrok-index
 generate_config: jsonnet opengrok-crontab
 .PHONY: jsonnet
 jsonnet:
+	# XXX: https://github.com/databricks/sjsonnet/issues/46
 	command -v jsonnet && jsonnet_cmd=jsonnet || jsonnet_cmd=$(BIN_DIR)/sjsonnet.jar; \
-	  $${jsonnet_cmd} --string --multi . repositories.jsonnet
+	  $${jsonnet_cmd} -S --multi . repositories.jsonnet
 	ln -sf $(SCRIPTS)/hound_config.json /tmp/hound_config.json
 
 pandoc:
