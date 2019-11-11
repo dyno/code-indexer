@@ -67,14 +67,16 @@ RUN mkdir -p ${BIN_DIR}
 COPY --from=builder /tmp/ctags/ctags ${BIN_DIR}
 COPY --from=builder /go/bin/houndd ${BIN_DIR}
 COPY --from=builder /tmp/jsonnet/jsonnet ${BIN_DIR}
-ADD https://github.com/databricks/sjsonnet/releases/download/0.1.6/sjsonnet.jar ${BIN_DIR}/
+RUN curl -L https://github.com/databricks/sjsonnet/releases/download/0.1.6/sjsonnet.jar \
+      -o ${BIN_DIR}/sjsonnet.jar
 RUN chmod +x ${BIN_DIR}/sjsonnet.jar
 
 
 ## OpenGrok ##
 
 ARG OPENGROK_RELEASE
-ADD https://github.com/OpenGrok/OpenGrok/releases/download/${OPENGROK_RELEASE}/opengrok-${OPENGROK_RELEASE}.tar.gz /tmp/opengrok-${OPENGROK_RELEASE}.tar.gz
+RUN curl -L https://github.com/OpenGrok/OpenGrok/releases/download/${OPENGROK_RELEASE}/opengrok-${OPENGROK_RELEASE}.tar.gz \
+      -o /tmp/opengrok-${OPENGROK_RELEASE}.tar.gz
 RUN mkdir -p /opengrok && tar zxvf /tmp/opengrok-${OPENGROK_RELEASE}.tar.gz --strip-components=1 -C /opengrok
 # https://github.com/oracle/opengrok/tree/master/opengrok-tools#installation-on-the-target-system
 RUN pip3 install /opengrok/tools/opengrok-tools.tar.gz

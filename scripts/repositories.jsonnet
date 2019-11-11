@@ -1,23 +1,8 @@
 local all_repositories = [
   {
     branch: 'master',
-    name: 'spark-on-k8s-operator',
-    url: 'https://github.com/GoogleCloudPlatform/spark-on-k8s-operator.git',
-  },
-  {
-    branch: 'master',
-    name: 'abstract-operator',
-    url: 'https://github.com/jvm-operators/abstract-operator',
-  },
-  {
-    branch: 'master',
-    name: 'openshift-spark-operator',
-    url: 'https://github.com/radanalyticsio/spark-operator.git',
-  },
-  {
-    branch: 'master',
-    name: 'dyno-spark-operator',
-    url: 'https://github.com/radanalyticsio/openshift-spark.git',
+    name: 'code-indexer',
+    url: 'https://github.com/dyno/code-indexer.git',
   },
 ];
 

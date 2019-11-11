@@ -3,4 +3,4 @@ tmp
 src
 *.log
 build
-
+scripts/repos.jsonnet

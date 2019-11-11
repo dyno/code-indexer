@@ -47,13 +47,20 @@ docker-push:
 docker-start: docker-run
 CMD :=
 OPT :=
+
+ifneq ($(wildcard scripts/repos.jsonnet),)
+  REPOS_MAPPING := -v $${PWD}/scripts/repos.jsonnet:/scripts/repositories.jsonnet
+else
+  REPOS_MAPPING :=
+endif
+
 docker-run:
 	docker rm $(CONTAINER) || true
 	mkdir -p tmp
 	mkdir -p src
 	docker run --rm $(OPT) --name $(CONTAINER) \
 	  -p 8129:8129                             \
-	  -v $${PWD}/scripts:/scripts              \
+	  $(REPOS_MAPPING)                         \
 	  -v $${PWD}/tmp:/tmp                      \
 	  -v $${PWD}/src:/src                      \
 	  $(IMAGE)                                 \
