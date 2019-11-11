@@ -20,10 +20,12 @@ OPENGROK_RELEASE := 1.3.3
 
 build-opengrok:
 	mkdir -p tmp
-	[[ ! -e tmp/opengrok ]] && cd tmp && git clone https://github.com/oracle/opengrok.git || true
-	cd tmp/opengrok; \
-	  git show-ref --verify --quiet refs/heads/r$(OPENGROK_RELEASE) \
-	  || git checkout $(OPENGROK_RELEASE) -b r$(OPENGROK_RELEASE) --force
+	[[ -e tmp/opengrok ]] || cd tmp && git clone https://github.com/oracle/opengrok.git
+	cd tmp/opengrok;                                                           \
+	  git show-ref --verify --quiet refs/heads/r$(OPENGROK_RELEASE)            \
+	  || (git fetch --tags --force                                             \
+	      && git checkout $(OPENGROK_RELEASE) -b r$(OPENGROK_RELEASE) --force) \
+	# END
 	@# https://github.com/oracle/opengrok/blob/master/docker/README.md#build-image-locally
 	cd tmp/opengrok && ./mvnw -DskipTests=true clean package
 
