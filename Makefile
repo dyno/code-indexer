@@ -1,7 +1,7 @@
 SHELL = /bin/bash
 
 APP_NAME := code-indexer
-REPOSITORY := dyno/code-indexer
+REPOSITORY := dynofu/code-indexer
 
 VERSION_TAG := 2019.11.11
 IMAGE := $(REPOSITORY):$(VERSION_TAG)
