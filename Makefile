@@ -3,7 +3,7 @@ SHELL = /bin/bash
 APP_NAME := code-indexer
 REPOSITORY := dynofu/code-indexer
 
-VERSION_TAG := 2019.11.11
+VERSION_TAG := 2020.02.28
 IMAGE := $(REPOSITORY):$(VERSION_TAG)
 CONTAINER := $(APP_NAME)
 
@@ -16,8 +16,23 @@ $(info REPOSITORY=$(REPOSITORY) VERSION_TAG=$(VERSION_TAG) IMAGE=$(IMAGE) CONTAI
 # ## Build and Release ##
 
 # https://github.com/oracle/opengrok/releases
-OPENGROK_RELEASE := 1.3.3
+OPENGROK_RELEASE := 1.5.12
 
+
+docker-build:
+	DOCKER_BUILDKIT=1 docker build .                   \
+	  --build-arg OPENGROK_RELEASE=$(OPENGROK_RELEASE) \
+	  --tag $(REPOSITORY):$(VERSION_TAG)               \
+	  --tag $(REPOSITORY):latest                       \
+	  # END
+
+
+docker-push:
+	docker push $(REPOSITORY):$(VERSION_TAG)
+	docker push $(REPOSITORY):latest
+
+
+# manually build opengrok, not a necessary step.
 build-opengrok:
 	mkdir -p tmp
 	[[ -e tmp/opengrok ]] || (cd tmp && git clone https://github.com/oracle/opengrok.git)
@@ -28,17 +43,6 @@ build-opengrok:
 	# END
 	@# https://github.com/oracle/opengrok/blob/master/docker/README.md#build-image-locally
 	cd tmp/opengrok && ./mvnw -DskipTests=true clean package
-
-docker-build:
-	docker build .                                     \
-	  --build-arg OPENGROK_RELEASE=$(OPENGROK_RELEASE) \
-	  --tag $(REPOSITORY):$(VERSION_TAG)               \
-	  --tag $(REPOSITORY):latest                       \
-	  # END
-
-docker-push:
-	docker push $(REPOSITORY):$(VERSION_TAG)
-	docker push $(REPOSITORY):latest
 
 
 # ------------------------------------------------------------------------------
@@ -54,6 +58,7 @@ else
   REPOS_MAPPING :=
 endif
 
+
 docker-run:
 	docker rm $(CONTAINER) || true
 	mkdir -p tmp
@@ -67,11 +72,14 @@ docker-run:
 	  $(CMD)                                   \
 	# END
 
+
 docker-bash:
 	$(MAKE) docker-exec CMD=/bin/bash
 
+
 docker-exec:
 	docker exec -it $(CONTAINER) $(CMD)
+
 
 docker-stop:
 	docker stop $(CONTAINER)
